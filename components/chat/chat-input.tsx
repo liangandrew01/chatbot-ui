@@ -1,3 +1,5 @@
+// called in /components/chat/chat-ui.tsx
+
 import { ChatbotUIContext } from "@/context/context"
 import useHotkey from "@/lib/hooks/use-hotkey"
 import { LLM_LIST } from "@/lib/models/llm/llm-list"
@@ -21,7 +23,7 @@ import { useChatHistoryHandler } from "./chat-hooks/use-chat-history"
 import { usePromptAndCommand } from "./chat-hooks/use-prompt-and-command"
 import { useSelectFileHandler } from "./chat-hooks/use-select-file-handler"
 
-interface ChatInputProps {}
+interface ChatInputProps {} // specifies the shape of the props that ChatINput expects to receive; currently empty
 
 export const ChatInput: FC<ChatInputProps> = ({}) => {
   const { t } = useTranslation()
@@ -32,6 +34,7 @@ export const ChatInput: FC<ChatInputProps> = ({}) => {
 
   const [isTyping, setIsTyping] = useState<boolean>(false)
 
+  // useContext, so ChatInput component will look up the component tree to extract these values
   const {
     isAssistantPickerOpen,
     focusAssistant,

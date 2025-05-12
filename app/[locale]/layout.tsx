@@ -1,3 +1,5 @@
+// root layout. wraps entire app in <GlobalState>, which contains <ChatbotUIContext.Provider>. see return section below
+
 import { Toaster } from "@/components/ui/sonner"
 import { GlobalState } from "@/components/utility/global-state"
 import { Providers } from "@/components/utility/providers"
@@ -97,7 +99,8 @@ export default async function RootLayout({
           >
             <Toaster richColors position="top-center" duration={3000} />
             <div className="bg-background text-foreground flex h-dvh flex-col items-center overflow-x-auto">
-              {session ? <GlobalState>{children}</GlobalState> : children}
+              {session ? <GlobalState>{children}</GlobalState> : children}{" "}
+              {/* wraps all children in GlobalState when user is logged in */}
             </div>
           </TranslationsProvider>
         </Providers>

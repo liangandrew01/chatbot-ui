@@ -1,4 +1,7 @@
-// TODO: Separate into multiple contexts, keeping simple for now
+// from original author: TODO: Separate into multiple contexts, keeping simple for now
+// declare state variables and their setter functions
+// imports shapes defined in ChatbotUIContext and fills it with actual values
+// wraps children in context provider
 
 "use client"
 
@@ -123,11 +126,15 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [selectedTools, setSelectedTools] = useState<Tables<"tools">[]>([])
   const [toolInUse, setToolInUse] = useState<string>("none")
 
+  // fetch starting data and available models, then sets state variables equal to those
+  // runs when dependency array values change AND ON STARTUP remember??
   useEffect(() => {
+    // the syntax structure is like this: (async () => { ... })() it is an immediately invoked function expression (IIFE)
     ;(async () => {
-      const profile = await fetchStartingData()
+      const profile = await fetchStartingData() // call this function to fetch user profile and workspaces
 
       if (profile) {
+        // if successful..
         const hostedModelRes = await fetchHostedModels(profile)
         if (!hostedModelRes) return
 
@@ -152,27 +159,32 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
     })()
   }, [])
 
+  // function definition to authenticate supabase session, fetch profile data, workspaces, workspace images
+  // handles loading all your personal data when first opening app
   const fetchStartingData = async () => {
-    const session = (await supabase.auth.getSession()).data.session
+    const session = (await supabase.auth.getSession()).data.session // get the current authentication session
 
     if (session) {
       const user = session.user
 
-      const profile = await getProfileByUserId(user.id)
+      const profile = await getProfileByUserId(user.id) // loads profile
       setProfile(profile)
 
       if (!profile.has_onboarded) {
+        // if setup has not been completed, redirect to setup page
         return router.push("/setup")
       }
 
-      const workspaces = await getWorkspacesByUserId(user.id)
+      const workspaces = await getWorkspacesByUserId(user.id) // load workspaces
       setWorkspaces(workspaces)
 
       for (const workspace of workspaces) {
+        // for each workspace...
         let workspaceImageUrl = ""
 
         if (workspace.image_path) {
-          workspaceImageUrl =
+          // if there is an image attached to the workspace...
+          workspaceImageUrl = // ...get the image url
             (await getWorkspaceImageFromStorage(workspace.image_path)) || ""
         }
 

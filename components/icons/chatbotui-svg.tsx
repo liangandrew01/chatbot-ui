@@ -1,7 +1,8 @@
 import { FC } from "react"
 
 interface ChatbotUISVGProps {
-  theme: "dark" | "light"
+  // type definition for ChatbotUISVGProps object
+  theme: "dark" | "light" // will be passed as prop for ChatbotUISVG react component
   scale?: number
 }
 

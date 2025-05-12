@@ -1,16 +1,19 @@
 import { supabase } from "@/lib/supabase/browser-client"
 import { toast } from "sonner"
 
+// uploads the raw file (the bytes) to Supabase Storage
 export const uploadFile = async (
-  file: File,
+  file: File, // JS/TS File object type is like a manilla folder with contents (file) and label description (payload): name, user_id, file_id
   payload: {
+    // payload is the label description
     name: string
     user_id: string
     file_id: string
   }
 ) => {
   const SIZE_LIMIT = parseInt(
-    process.env.NEXT_PUBLIC_USER_FILE_SIZE_LIMIT || "10000000"
+    // check size limit, parseInt turns string to integer
+    process.env.NEXT_PUBLIC_USER_FILE_SIZE_LIMIT || "10000000" // either the size limit defined in env or 10MB
   )
 
   if (file.size > SIZE_LIMIT) {
@@ -19,6 +22,7 @@ export const uploadFile = async (
     )
   }
 
+  // create storage path
   const filePath = `${payload.user_id}/${Buffer.from(payload.file_id).toString("base64")}`
 
   const { error } = await supabase.storage

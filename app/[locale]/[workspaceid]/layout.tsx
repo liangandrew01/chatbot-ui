@@ -1,3 +1,6 @@
+// workspace specific layout. wraps all children in Dashboard component
+// only applies to pages under a specific workspace path
+
 "use client"
 
 import { Dashboard } from "@/components/ui/dashboard"
@@ -179,5 +182,7 @@ export default function WorkspaceLayout({ children }: WorkspaceLayoutProps) {
     return <Loading />
   }
 
+  // Dashboard component is a layout wrapper for workspace-related pages
+  // it gets rendered inside the GlobalState from the parent layout
   return <Dashboard>{children}</Dashboard>
 }

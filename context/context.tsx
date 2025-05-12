@@ -1,3 +1,6 @@
+// ChatbotUIContext serves as a comprehensive state management system
+// defines shape/interface/blueprint for state types and their default values
+
 import { Tables } from "@/supabase/types"
 import {
   ChatFile,
@@ -12,6 +15,7 @@ import { AssistantImage } from "@/types/images/assistant-image"
 import { VALID_ENV_KEYS } from "@/types/valid-keys"
 import { Dispatch, SetStateAction, createContext } from "react"
 
+// defines shape of the context/state
 interface ChatbotUIContext {
   // PROFILE STORE
   profile: Tables<"profiles"> | null
@@ -138,6 +142,7 @@ interface ChatbotUIContext {
   setToolInUse: Dispatch<SetStateAction<string>>
 }
 
+// create context with default values
 export const ChatbotUIContext = createContext<ChatbotUIContext>({
   // PROFILE STORE
   profile: null,

@@ -196,15 +196,18 @@ export const useChatHandler = () => {
     const startingInput = messageContent
 
     try {
+      // set state of relevant variables
       setUserInput("")
       setIsGenerating(true)
       setIsPromptPickerOpen(false)
       setIsFilePickerOpen(false)
       setNewMessageImages([])
 
+      // create new instance of thing that will stop generation?
       const newAbortController = new AbortController()
       setAbortController(newAbortController)
 
+      // creates a combined list of LLM models (custom, chosen, local, open router) and then finds the model that matches the users selected settings
       const modelData = [
         ...models.map(model => ({
           modelId: model.model_id as LLMID,
@@ -219,6 +222,7 @@ export const useChatHandler = () => {
         ...availableOpenRouterModels
       ].find(llm => llm.modelId === chatSettings?.model)
 
+      // ensures these variables exist
       validateChatSettings(
         chatSettings,
         modelData,
@@ -227,18 +231,26 @@ export const useChatHandler = () => {
         messageContent
       )
 
+      // curretChat set equal to a {...copy} of selectedChat if it exists or null otherwise
+      // this preserves the original selectedChat object
       let currentChat = selectedChat ? { ...selectedChat } : null
 
+      // converts images uploaded with prompt to base64 strings which can be more easily transmitted to the AI without errors
+      // the AI model decodes the base64 back into an image, then runs its analysis
       const b64Images = newMessageImages.map(image => image.base64)
 
+      // retrievedFileItems will start as an empty array of type <"file_items"> row from Tables
       let retrievedFileItems: Tables<"file_items">[] = []
 
+      // if either are true (that the new message has attached files, or previous messages have files), and useRetrieval setting is true, then use retrieval tool
+      // updates UI to show that retrieval is happening, signals that retrieval is in use, and prepares for actual retrieval of relevant conteent from the files
       if (
         (newMessageFiles.length > 0 || chatFiles.length > 0) &&
         useRetrieval
       ) {
         setToolInUse("retrieval")
 
+        // returns an array of most relevant text chunks extracted from files as context that will be sent to the AI model
         retrievedFileItems = await handleRetrieval(
           userInput,
           newMessageFiles,
